@@ -1,34 +1,50 @@
-## Quick start
 
-* Install MODX Revolution
+Со своей сборкой почти все победил. Как собрать разобрался, пакеты добавил, добавил сразу настройку поставщика модсторе,
+ошибки пролечил. И тут оказалось что все шаблоны и чанки на php написаны :-(. А на это привыкать не надо. 
+В pdoTools поддержку $modx и php я вырубил. Придется чанки и шаблоны с другого проекта брать или самому переписывать ;-(.
 
-* Upload this package into the `Extras` directory in the root of site
+# Сборка для разработки
 
-* You need to rename it to `anyOtherName` your package, so enter into SSH console and run
+Заготовка сайта на MODX REVOLUTION для разработки приложения на Fenom + Bootstrap 4
+
+## Fenom
+
+Fenom на сайте включен по умолчанию все ресурсы (**чанки, шаблоны, страницы**) хранятся в папке 
 ```
-php ~/www/Extras/siteDev/rename_it.php anyOtherName
+core/elements/
 ```
-*path on your site may differs*
 
-* Then install it on dev site
+## MarkDown
+
+Добавлен свой сниппет для обработки страниц в формате .md
+
+*для подключении на странице используется*
 ```
-php ~/www/Extras/anyOtherName/_build/build.php
-``` 
+[[!MarkdownFenom? &input=`markdown/main.md`]]
+```
 
-## Settings
+## Css и js
 
-See `_build/config.inc.php` for editable package options.
+Для css настроены стили для форматирования текста под формат markdown
 
-All resolvers and elements are in `_build` path. All files that begins not from `.` or `_` will be added automatically. 
+### Копировать путь к файлу
 
-If you will add a new type of element, you will need to add the method with that name into `build.php` script as well.
+В PhpStorm есть пункт в контекстном меню `Copy Realatve Path`  который копирует путь до папки с файлом.
 
-## Build and download
+```
+По умолчанию получится вот так
+core/elements/chunks
+```   
 
-You can build package at any time by opening `http://dev.site.com/Extras/anyOtherName/_build/build.php`
+Необходимо на папке ***core/elements*** в контектном меню выбрать `Mark Directory as -> Sources Root`
 
-If you want to download built package - just add `?download=1` to the address.
+```   
+Теперь при копировании будет вот такой путь 
+chunks/_crumbs.tpl
+```   
 
-## Example deploy settings
 
-[![](https://file.modx.pro/files/3/a/b/3ab2753b9e8b6c09a4ca0da819db37b6s.jpg)](https://file.modx.pro/files/3/a/b/3ab2753b9e8b6c09a4ca0da819db37b6.png) [![](https://file.modx.pro/files/c/1/a/c1afbb8988ab358a0b400cdcdb0391d4s.jpg)](https://file.modx.pro/files/c/1/a/c1afbb8988ab358a0b400cdcdb0391d4.png)
+## Дополнительно
+
+* [Заметки по Fenom](http://bustep.ru/markdown/55-shpargalka-po-fenom.html)
+* [Заметки по Markdown](http://bustep.ru/markdown/shpargalka-po-markdown.html)

@@ -81,8 +81,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             'auto_check_pkg_updates' => false,
             'feed_modx_news_enabled' => false,
             'feed_modx_security_enabled' => false,
-            'link_tag_scheme' => 'full',
-            'locale' => 'ru_RU.utf-8',
+            //'link_tag_scheme' => 'full',
+            'locale' => 'english';//'ru_RU.utf-8',
             'password_generated_length' => '6',
             'password_min_length' => '6',
             'publish_default' => true,
@@ -91,9 +91,9 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
             // pdoTools
             'pdotools_fenom_default' => true,
-            'pdotools_fenom_modx' => true,
+            'pdotools_fenom_modx' => false,
             'pdotools_fenom_parser' => true,
-            'pdotools_fenom_php' => true,
+            'pdotools_fenom_php' => false,
 
             'msdemodata_parent_resource' => $site_catalog,
             'ms2_template_category_default' => $default_template_category,

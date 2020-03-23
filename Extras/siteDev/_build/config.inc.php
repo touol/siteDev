@@ -10,7 +10,7 @@ if (!defined('MODX_CORE_PATH')) {
 return [
     'name' => 'siteDev',
     'name_lower' => 'sitedev',
-    'version' => '1.0.0',
+    'version' => '1.1.1',
     'release' => 'pl',
     // Install package to site right after build
     'install' => false,
@@ -38,4 +38,5 @@ return [
     'log_target' => php_sapi_name() == 'cli' ? 'ECHO' : 'HTML',
     // Download transport.zip after build
     'download' => !empty($_REQUEST['download']),
+
 ];

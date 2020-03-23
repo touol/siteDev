@@ -51,9 +51,42 @@ $packages = [
         'version' => '1.3.0-pl',
         'service_url' => 'modstore.pro',
     ],
+    'FormIt' => [
+        'version' => '4.2.1-pl',
+        'service_url' => 'modx.com',
+    ],
+    'CKEditor' => [
+        'version' => '1.4.0-pl',
+        'service_url' => 'modx.com',
+    ],
+    'Console' => [
+        'version' => '2.2.2-pl',
+        'service_url' => 'modx.com',
+    ],
+    'MIGX' => [
+        'version' => '2.12.0-pl',
+        'service_url' => 'modx.com',
+    ],
+    'VersionX' => [
+        'version' => '2.2.1-pl',
+        'service_url' => 'modx.com',
+    ],
+    'AjaxForm' => [
+        'version' => '1.1.9-pl',
+        'service_url' => 'modstore.pro',
+    ],
+    'frontendManager' => [
+        'version' => '1.1.1-beta',
+        'service_url' => 'modstore.pro',
+    ],
 ];
-
-
+/*
+    'Collections' => '3.6.0-pl',
+*/
+/*
+    'AjaxForm' => '1.1.9-pl',
+    'frontendManager' => '1.1.1-beta',
+*/
 $downloadPackage = function ($src, $dst) {
     if (ini_get('allow_url_fopen')) {
         $file = @file_get_contents($src);
@@ -173,28 +206,37 @@ $success = false;
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
-
-
-        $install_packages = $options['install_packages'];
-        $install_packages['pdoTools'] = 'pdoTools';
-        foreach ($packages as $name => $data) {
-            if (in_array($name, $install_packages)) {
-                if (!is_array($data)) {
-                    $data = ['version' => $data];
-                }
-                $installed = $modx->getIterator('transport.modTransportPackage', ['package_name' => $name]);
-                /** @var modTransportPackage $package */
-                foreach ($installed as $package) {
-                    if ($package->compareVersion($data['version'], '<=')) {
-                        continue(2);
+        if (array_key_exists('install_packages', $options)) {
+            $install_packages = $options['install_packages'];
+            //$install_packages['pdoTools'] = 'pdoTools';
+            foreach ($packages as $name => $data) {
+                if (in_array($name, $install_packages)) {
+                    if (!is_array($data)) {
+                        $data = ['version' => $data];
                     }
+                    $installed = $modx->getIterator('transport.modTransportPackage', ['package_name' => $name]);
+                    /** @var modTransportPackage $package */
+                    foreach ($installed as $package) {
+                        if ($package->compareVersion($data['version'], '<=')) {
+                            continue(2);
+                        }
+                    }
+                    $modx->log(modX::LOG_LEVEL_INFO, "Trying to install <b>{$name}</b>. Please wait...");
+                    $response = $installPackage($name, $data);
+                    if($response['success'] and $name == 'pdoTools'){
+                        $fqn = $modx->getOption('pdoTools.class', null, 'pdotools.pdotools', true);
+                        $path = $modx->getOption('pdotools_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
+                        $modx->loadClass($fqn, $path, false, true);
+
+                        $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+                        $path = $modx->getOption('pdofetch_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
+                        $modx->loadClass($fqn, $path, false, true);
+                    }
+                    $level = $response['success']
+                        ? modX::LOG_LEVEL_INFO
+                        : modX::LOG_LEVEL_ERROR;
+                    $modx->log($level, $response['message']);
                 }
-                $modx->log(modX::LOG_LEVEL_INFO, "Trying to install <b>{$name}</b>. Please wait...");
-                $response = $installPackage($name, $data);
-                $level = $response['success']
-                    ? modX::LOG_LEVEL_INFO
-                    : modX::LOG_LEVEL_ERROR;
-                $modx->log($level, $response['message']);
             }
         }
         $success = true;

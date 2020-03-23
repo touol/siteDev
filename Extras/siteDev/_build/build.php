@@ -1,4 +1,5 @@
 <?php
+
 class siteDevPackage
 {
     /** @var modX $modx */
@@ -696,17 +697,7 @@ class siteDevPackage
     {
         $this->model();
 
-        // Add elements
-        $elements = scandir($this->config['elements']);
-        foreach ($elements as $element) {
-            if (in_array($element[0], ['_', '.'])) {
-                continue;
-            }
-            $name = preg_replace('#\.php$#', '', $element);
-            if (method_exists($this, $name)) {
-                $this->{$name}();
-            }
-        }
+        
 
         // Create main vehicle
         /** @var modTransportVehicle $vehicle */
@@ -766,12 +757,33 @@ class siteDevPackage
         // Add resolvers into vehicle
         $resolvers = scandir($this->config['resolvers']);
         foreach ($resolvers as $resolver) {
-            if (in_array($resolver[0], ['_', '.'])) {
+            if (in_array($resolver[0], ['_', '.']) or $resolver == "settings.php") {
                 continue;
             }
             if ($vehicle->resolve('php', ['source' => $this->config['resolvers'] . $resolver])) {
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Added resolver ' . preg_replace('#\.php$#', '', $resolver));
             }
+        }
+        
+        
+        $this->builder->putVehicle($vehicle);
+        
+        // Add elements Выполняем после установки пакетов. minishop2 надо ставить, чтоб ресурс категория правильно встал.
+        $elements = scandir($this->config['elements']);
+        foreach ($elements as $element) {
+            if (in_array($element[0], ['_', '.'])) {
+                continue;
+            }
+            $name = preg_replace('#\.php$#', '', $element);
+            if (method_exists($this, $name)) {
+                $this->{$name}();
+            }
+        }
+        
+        $vehicle = $this->builder->createVehicle($this->category, $this->category_attributes);
+        $resolver = "settings.php"; //setting выполняем после добавления ресурсов
+        if ($vehicle->resolve('php', ['source' => $this->config['resolvers'] . $resolver])) {
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Added resolver ' . preg_replace('#\.php$#', '', $resolver));
         }
         $this->builder->putVehicle($vehicle);
 
